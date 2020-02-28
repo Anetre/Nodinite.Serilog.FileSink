@@ -2,7 +2,7 @@
 
 # Nodinite.Serilog.FilSink
 
-[![NuGet Version](http://img.shields.io/nuget/v/Nodinite.Serilog.ServiceBusSink.svg?style=flat)](https://www.nuget.org/packages/Nodinite.Serilog.ServiceBusSink/)
+[![NuGet Version](http://img.shields.io/nuget/v/Nodinite.Serilog.FileSink.svg?style=flat)](https://www.nuget.org/packages/Nodinite.Serilog.FileSink/)
 
 A [Serilog](https://www.nuget.org/packages/Serilog/2.7.2-dev-01033) sink that writes log events to an SMB folder. 
 
@@ -15,7 +15,7 @@ This project is built with .NET Standard 2.0.
 Start by installing the NuGet package [Nodinite.Serilog.Sink.Core](https://www.nuget.org/packages/Nodinite.Serilog.Sink.Core/).
 
 ```
-Install-Package Nodinite.Serilog.ServiceBusSink
+Install-Package Nodinite.Serilog.FileSink
 ```
 
 ### Configuration
@@ -25,8 +25,8 @@ Install-Package Nodinite.Serilog.ServiceBusSink
 |Field|Example Value|Comment|
 |---|---|---| 
 |LogAgentValueId|503|Who ([Log Agents](https://documentation.nodinite.com/Documentation/WebClient?doc=/5.%20Administration/1.%20Log/4.%20Log%20Agents/Log%20Agents)) sent the data|
-|EndPointName|"Nodinite.Serilog.ServiceBusSink.Tests"|Name of [Endpoint](https://documentation.nodinite.com/Documentation/RepositoryModel?doc=/Endpoints/Overview) transport|
-|EndPointUri|"Nodinite.Serilog.ServiceBusSink.Tests.Serilog"|URI for [Endpoint](https://documentation.nodinite.com/Documentation/RepositoryModel?doc=/Endpoints/Overview) transport |
+|EndPointName|"Nodinite.Serilog.FileSink.Tests"|Name of [Endpoint](https://documentation.nodinite.com/Documentation/RepositoryModel?doc=/Endpoints/Overview) transport|
+|EndPointUri|"Nodinite.Serilog.FileSink.Tests.Serilog"|URI for [Endpoint](https://documentation.nodinite.com/Documentation/RepositoryModel?doc=/Endpoints/Overview) transport |
 |[EndPointDirection](https://documentation.nodinite.com/Documentation/CoreServices?doc=/Log%20API/Getting%20started/Log%20Event/Endpoint%20Directions)|0|Direction for [Endpoint](https://documentation.nodinite.com/Documentation/RepositoryModel?doc=/Endpoints/Overview) transport|
 |[EndPointTypeId](https://documentation.nodinite.com/Documentation/CoreServices?doc=/Log%20API/Getting%20started/Log%20Event/Endpoint%20Types)|0|Type of [Endpoint](https://documentation.nodinite.com/Documentation/RepositoryModel?doc=/Endpoints/Overview) transport|
 |OriginalMessageTypeName|"Serilog.LogEvent"|[Message Type Name](https://documentation.nodinite.com/Documentation/RepositoryModel?doc=/Message%20Types/Overview)|
@@ -40,30 +40,29 @@ Install-Package Nodinite.Serilog.ServiceBusSink
 
 Besides [Serilog](https://www.nuget.org/packages/serilog/), the following nuget packages need to be installed
 
-* [Nodinite.Serilog.ServiceBusSink](https://www.nuget.org/packages/Nodinite.Serilog.ServiceBusSink)
+* [Nodinite.Serilog.FileSink](https://www.nuget.org/packages/Nodinite.Serilog.FileSink)
 
 Using the following code below you can start logging events to [**Nodinite**](https://nodinite.com).
 
 ```csharp
-var connectionString = "{Your ServiceBus Connection String";
-var queueName = "{Your ServiceBus Queue Name}";
+var folder = "{Your Folder";
 
 var settings = new NodiniteLogEventSettings()
 {
     LogAgentValueId = 503,
     EndPointDirection = 0,
     EndPointTypeId = 0,
-    EndPointUri = "Nodinite.Serilog.ServiceBusSink.Tests.Serilog",
-    EndPointName = "Nodinite.Serilog.ServiceBusSink.Tests",
+    EndPointUri = "Nodinite.Serilog.FileSink.Tests.Serilog",
+    EndPointName = "Nodinite.Serilog.FileSink.Tests",
     ProcessingUser = "NODINITE",
-    ProcessName = "Nodinite.Serilog.ServiceBusSink.Tests",
+    ProcessName = "Nodinite.Serilog.FileSink.Tests",
     ProcessingMachineName = "NODINITE-DEV",
     ProcessingModuleName = "DOTNETCORE.TESTS",
     ProcessingModuleType = "DOTNETCORE.TESTPROJECT"
 };
 
 ILogger log = new LoggerConfiguration()
-    .WriteTo.NodiniteServiceBusSink(connectionString, queueName, settings)
+    .WriteTo.NodiniteFileSink(folder, settings)
     .CreateLogger()
     .ForContext("ApplicationInterchangeId", $"CustomId-{Guid.NewGuid().ToString()}")
     .ForContext("CustomerId", 12)
@@ -77,7 +76,7 @@ Besides [Serilog](https://www.nuget.org/packages/serilog/), the following nuget 
 
 * [Microsoft.Extensions.Configuration](https://www.nuget.org/packages/Microsoft.Extensions.Configuration/2.2.0-preview3-35497)
 * [Microsoft.Extensions.Configuration.Json](https://www.nuget.org/packages/Microsoft.Extensions.Configuration.Json/2.2.0-preview3-35497)
-* [Nodinite.Serilog.ServiceBusSink](https://www.nuget.org/packages/Nodinite.Serilog.ServiceBusSink)
+* [Nodinite.Serilog.FileSink](https://www.nuget.org/packages/Nodinite.Serilog.FileSink)
 * [Serilog.Settings.Configuration](https://www.nuget.org/packages/Serilog.Settings.Configuration/)
 
 Using the following code to initialize the logger in your application:
@@ -97,22 +96,21 @@ And putting the following into your appsettings.json:
 ```json
 {
   "Serilog": {
-    "Using": [ "Nodinite.Serilog.ServiceBusSink" ],
+    "Using": [ "Nodinite.Serilog.FileSink" ],
     "WriteTo": [
       {
-        "Name": "NodiniteServiceBusSink",
+        "Name": "FileSink",
         "Args": {
-          "ConnectionString": "",
-          "QueueName":  "",
+          "Folder": "",
           "Settings": {
             "LogAgentValueId": 503,
-            "EndPointName": "Nodinite.Serilog.ServiceBusSink.Tests",
-            "EndPointUri": "Nodinite.Serilog.ServiceBusSink.Tests.Serilog",
+            "EndPointName": "Nodinite.Serilog.FileSink.Tests",
+            "EndPointUri": "Nodinite.Serilog.FileSink.Tests.Serilog",
             "EndPointDirection": 0,
             "EndPointTypeId": 0,
             "OriginalMessageTypeName": "Serilog.LogEvent",
             "ProcessingUser": "NODINITE",
-            "ProcessName": "Nodinite.Serilog.ServiceBusSink.Tests",
+            "ProcessName": "Nodinite.Serilog.FileSink.Tests",
             "ProcessingMachineName": "NODINITE-DEV",
             "ProcessingModuleName": "DOTNETCORE.TESTS",
             "ProcessingModuleType": "DOTNETCORE.TESTPROJECT"
@@ -128,7 +126,7 @@ And putting the following into your appsettings.json:
 
 ```csharp
 ILogger log = new LoggerConfiguration()
-    .WriteTo.NodiniteServiceBusSink(connectionString, queueName, settings)
+    .WriteTo.NodiniteFileSink(folder, settings)
     .CreateLogger()
     .ForContext("CorrelationId", Guid.NewGuid())
     .ForContext("CustomerId", 12);
