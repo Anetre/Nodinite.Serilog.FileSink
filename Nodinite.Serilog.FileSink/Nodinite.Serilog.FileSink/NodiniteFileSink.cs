@@ -1,4 +1,4 @@
-﻿using Microsoft.Azure.ServiceBus;
+﻿
 using Newtonsoft.Json;
 using Nodinite.Serilog.Models;
 using Serilog.Core;
@@ -17,8 +17,6 @@ namespace Nodinite.Serilog.FileSink
         private readonly string _folder;
         private readonly NodiniteLogEventSettings _settings;
         private readonly Guid _localInterchangeId;
-
-        static IQueueClient queueClient;
 
         public NodiniteFileSink(string folder, NodiniteLogEventSettings settings, IFormatProvider formatProvider)
         {
