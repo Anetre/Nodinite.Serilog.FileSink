@@ -45,7 +45,7 @@ Besides [Serilog](https://www.nuget.org/packages/serilog/), the following nuget 
 Using the following code below you can start logging events to [**Nodinite**](https://nodinite.com).
 
 ```csharp
-var folder = "{Your Folder";
+var folder = "{Your Folder}";
 
 var settings = new NodiniteLogEventSettings()
 {
